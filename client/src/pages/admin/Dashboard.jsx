@@ -1,23 +1,34 @@
 import { useEffect, useState } from "react"
-import { assets, dashboard_data } from "../../assets/assets"
+import { assets } from "../../assets/assets"
 import BlogTableItem from "../../components/admin/BlogTableItem";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
-
     const [dashboardData, setDashboardData] = useState({
         blogs: 0,
         comments: 0,
         drafts: 0,
         recentBlogs: [],
     });
+    const { axios } = useAppContext();
 
     const fetchDashboard = async () => {
-        setDashboardData(dashboard_data);
+        try {
+            const { data } = await axios.get('/api/admin/dashboard');
+            if (data.success) {
+                setDashboardData(data.dashboardData);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
     }
 
     useEffect(() => {
         fetchDashboard();
-    }, [])
+    }, []);
 
     return (
         <div className="flex-1 p-4 md:p-10 bg-blue-50/50">
@@ -27,6 +38,7 @@ const Dashboard = () => {
 
                     <div>
                         <p className="text-xl font-semibold text-gray-600">{dashboardData.blogs}</p>
+
                         <p className="text-gray-400 font-light">Blogs</p>
                     </div>
                 </div>
@@ -36,6 +48,7 @@ const Dashboard = () => {
 
                     <div>
                         <p className="text-xl font-semibold text-gray-600">{dashboardData.comments}</p>
+                        
                         <p className="text-gray-400 font-light">Comments</p>
                     </div>
                 </div>
@@ -45,6 +58,7 @@ const Dashboard = () => {
 
                     <div>
                         <p className="text-xl font-semibold text-gray-600">{dashboardData.drafts}</p>
+                        
                         <p className="text-gray-400 font-light">Drafts</p>
                     </div>
                 </div>

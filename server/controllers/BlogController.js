@@ -136,7 +136,6 @@ export const addComment = async (req, res) => {
             success: true,
             message: 'Comment added for review'
         })
-
     } catch (error) {
         return res.json({
             success: false,
